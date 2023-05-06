@@ -39,6 +39,10 @@ const token = await f.encrypt(message);
 // Example: "This is a top secret message!"
 const plainText = await f.decrypt(token);
 
+// You can also use static methods for encryption/decryption
+const fernetToken = await Fernet.encrypt(message, secret);
+const decryptedText = await Fernet.decrypt(fernetToken, secret);
+
 ```
 
 ## Fernet Spec

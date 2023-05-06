@@ -66,6 +66,16 @@ describe('encrypt', () => {
   });
 });
 
+describe('Fernet.encrypt', () => {
+  test('should return a Fernet token if the secret is valid', async () => {
+    const secret = Fernet.generateSecret();
+    const message = 'hello world';
+    const fernetToken = await Fernet.encrypt(message, secret);
+    expect(fernetToken).not.toEqual(message);
+    expect(typeof fernetToken).toBe('string');
+  });
+});
+
 describe('decrypt', () => {
   test('should decrypt the encrypted fernet token', async () => {
     const secret = Fernet.generateSecret();
@@ -121,6 +131,60 @@ describe('decrypt', () => {
     const tokenWithInvalidSignature = toBase64Url(signedInvalidTokenBuffer);
     await expect(
       fernet.decrypt(tokenWithInvalidSignature)
+    ).rejects.toThrowError('Fernet token has invalid signature.');
+  });
+});
+
+describe('Fernet.decrypt', () => {
+  test('should decrypt the encrypted fernet token', async () => {
+    const secret = Fernet.generateSecret();
+    const message = 'hello world';
+    const fernetToken = await Fernet.encrypt(message, secret);
+    const decryptedText = await Fernet.decrypt(fernetToken, secret);
+    expect(decryptedText).toEqual(message);
+  });
+
+  test('should throw an error if the token has invalid encoding', async () => {
+    const secret = Fernet.generateSecret();
+    const fernetToken = 'invalid_token';
+    await expect(Fernet.decrypt(fernetToken, secret)).rejects.toThrowError(
+      'Fernet token has invalid encoding.'
+    );
+  });
+
+  test('should throw an error if the token has invalid length', async () => {
+    const secret = Fernet.generateSecret();
+    const fernetToken = 'bG9yZW1pcHN1bQ';
+    await expect(Fernet.decrypt(fernetToken, secret)).rejects.toThrowError(
+      'Fernet token has invalid length.'
+    );
+  });
+
+  test('should throw an error if the encryption key is invalid', async () => {
+    const secret = Fernet.generateSecret();
+    const message = 'hello world';
+    const fernetToken = await Fernet.encrypt(message, secret);
+    const invalidFernetToken =
+      'gAAAAABkVkz28mAO6KAXylTYm6iN5xu5O0oUMQZYSu5b09bywGDj1_qI1X0tnSKUsUe0k5zeEazuVCfufXI-lxXaydvhRsnvhw==';
+    await expect(
+      Fernet.decrypt(invalidFernetToken, secret)
+    ).rejects.toThrowError('Failed to decrypt the ciphertext.');
+  });
+
+  test('should throw an error if the encryption key is invalid', async () => {
+    const secret = Fernet.generateSecret();
+    const message = 'hello world';
+    const fernetToken = await Fernet.encrypt(message, secret);
+    const fernetTokenBuffer = fromBase64Url(fernetToken);
+    const invalidSignature = getRandomBytes(32);
+    const unsignedToken = fernetTokenBuffer.slice(0, -32);
+    const signedInvalidTokenBuffer = new Uint8Array([
+      ...unsignedToken,
+      ...invalidSignature,
+    ]);
+    const tokenWithInvalidSignature = toBase64Url(signedInvalidTokenBuffer);
+    await expect(
+      Fernet.decrypt(tokenWithInvalidSignature, secret)
     ).rejects.toThrowError('Fernet token has invalid signature.');
   });
 });

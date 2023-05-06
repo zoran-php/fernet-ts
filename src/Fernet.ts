@@ -139,8 +139,48 @@ export class Fernet {
    * @returns {Promise<string>} Base64Url encoded Fernet token
    */
   async encrypt(plainText: string): Promise<string> {
+    return Fernet.doEncryption(plainText, this.signingKey, this.encryptionKey);
+  }
+
+  /**
+   * Encrypts plain text and returns Fernet Token
+   *
+   * @method encrypt
+   * @author Zoran Davidovic
+   * @name encrypt
+   * @public
+   * @static
+   * @async
+   * @param {string} plainText
+   * @param {string} secretKey
+   * @returns {Promise<string>} Base64Url encoded Fernet token
+   */
+  static async encrypt(plainText: string, secretKey: string): Promise<string> {
+    const { signingKey, encryptionKey } = await Fernet.importKeys(secretKey);
+    return Fernet.doEncryption(plainText, signingKey, encryptionKey);
+  }
+
+  /**
+   * Encrypts plain text and returns Fernet Token
+   *
+   * @method doEncryption
+   * @author Zoran Davidovic
+   * @name doEncryption
+   * @private
+   * @static
+   * @async
+   * @param {string} plainText
+   * @param {CryptoKey} signingKey
+   * @param {CryptoKey} encryptionKey
+   * @returns {Promise<string>} Base64Url encoded Fernet token
+   */
+  private static async doEncryption(
+    plainText: string,
+    signingKey: CryptoKey,
+    encryptionKey: CryptoKey
+  ): Promise<string> {
     const iv = getRandomBytes(16);
-    const cipherText = await aesCbcEncrypt(plainText, iv, this.encryptionKey);
+    const cipherText = await aesCbcEncrypt(plainText, iv, encryptionKey);
     const version = new Uint8Array([0x80]);
     const timestamp = Fernet.getTimestampBuffer();
     const unsignedToken = new Uint8Array([
@@ -149,7 +189,7 @@ export class Fernet {
       ...iv,
       ...cipherText,
     ]);
-    const hmac = await generateHMAC(unsignedToken, this.signingKey);
+    const hmac = await generateHMAC(unsignedToken, signingKey);
     const signedToken = new Uint8Array([...unsignedToken, ...hmac]);
     return toBase64Url(signedToken);
   }
@@ -167,6 +207,55 @@ export class Fernet {
    * @returns {Promise<string>} Decrypted plain text
    */
   async decrypt(fernetToken: string): Promise<string> {
+    return Fernet.doDecryption(
+      fernetToken,
+      this.signingKey,
+      this.encryptionKey
+    );
+  }
+
+  /**
+   * Decrypts Fernet token and returns plain text
+   *
+   * @method
+   * @throws {InvalidTokenError} - Invalid token error
+   * @author Zoran Davidovic
+   * @name decrypt
+   * @public
+   * @static
+   * @async
+   * @param {string} fernetToken
+   * @param {string} secretKey
+   * @returns {Promise<string>} Decrypted plain text
+   */
+  static async decrypt(
+    fernetToken: string,
+    secretKey: string
+  ): Promise<string> {
+    const { signingKey, encryptionKey } = await Fernet.importKeys(secretKey);
+    return Fernet.doDecryption(fernetToken, signingKey, encryptionKey);
+  }
+
+  /**
+   * Decrypts Fernet token and returns plain text
+   *
+   * @method
+   * @throws {InvalidTokenError} - Invalid token error
+   * @author Zoran Davidovic
+   * @name doDecryption
+   * @private
+   * @static
+   * @async
+   * @param {string} fernetToken
+   * @param {CryptoKey} signingKey
+   * @param {CryptoKey} encryptionKey
+   * @returns {Promise<string>} Decrypted plain text
+   */
+  private static async doDecryption(
+    fernetToken: string,
+    signingKey: CryptoKey,
+    encryptionKey: CryptoKey
+  ): Promise<string> {
     let tokenBuffer = new Uint8Array();
     try {
       tokenBuffer = fromBase64Url(fernetToken);
@@ -186,16 +275,12 @@ export class Fernet {
     const hmac = tokenBuffer.slice(-32);
     let plainText = '';
     try {
-      plainText = await aesCbcDecrypt(cipherText, iv, this.encryptionKey);
+      plainText = await aesCbcDecrypt(cipherText, iv, encryptionKey);
     } catch (err) {
       throw new FailedDecryptionError('Failed to decrypt the ciphertext.');
     }
     const unsignedToken = tokenBuffer.slice(0, -32);
-    const isTokenVerified = await verifyHMAC(
-      unsignedToken,
-      this.signingKey,
-      hmac
-    );
+    const isTokenVerified = await verifyHMAC(unsignedToken, signingKey, hmac);
     if (!isTokenVerified) {
       throw new InvalidTokenError('Fernet token has invalid signature.');
     }
