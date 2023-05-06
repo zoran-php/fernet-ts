@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/zoran-php/fernet-ts.git"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fernet algorithm implementation written in Typescript using Web Crypto API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
