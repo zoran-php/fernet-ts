@@ -7,7 +7,7 @@ Encrypted text in this Typescript implementation can be decrypted using Python F
 
 ## Installation
 
-Use the package manager [npm](https://github.com/npm/cli) to install [fernet-nodejs](https://www.npmjs.com/package/fernet-ts).
+Use the package manager [npm](https://github.com/npm/cli) to install [fernet-ts](https://www.npmjs.com/package/fernet-ts).
 
 ```bash
 npm i fernet-ts
