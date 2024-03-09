@@ -1,21 +1,10 @@
-import '@testing-library/jest-dom';
-import crypto from 'crypto';
-import { TextDecoder, TextEncoder } from 'util';
+import { describe, test, expect } from 'vitest';
 import { Fernet } from '../src/Fernet';
 import {
   fromBase64Url,
   getRandomBytes,
   toBase64Url,
 } from '../src/utils/crypto';
-
-Object.assign(global, { TextDecoder, TextEncoder });
-
-Object.defineProperty(global.self, 'crypto', {
-  value: {
-    subtle: crypto.webcrypto.subtle,
-    getRandomValues: crypto.webcrypto.getRandomValues,
-  },
-});
 
 describe('Ferent.generateSecret', () => {
   test('should return different secret every time', async () => {

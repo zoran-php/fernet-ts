@@ -1,8 +1,8 @@
-import { Algorithms } from './enums/Algorithms';
-import { HashAlgorithm } from './enums/HashAlgorithm';
-import { FailedDecryptionError } from './errors/FailedDecryptionError';
-import { InvalidSecretError } from './errors/InvalidSecretError';
-import { InvalidTokenError } from './errors/InvalidTokenError';
+import { algorithms } from './enums/Algorithms.js';
+import { hashAlgorithm } from './enums/HashAlgorithm.js';
+import { FailedDecryptionError } from './errors/FailedDecryptionError.js';
+import { InvalidSecretError } from './errors/InvalidSecretError.js';
+import { InvalidTokenError } from './errors/InvalidTokenError.js';
 import {
   aesCbcDecrypt,
   aesCbcEncrypt,
@@ -12,7 +12,7 @@ import {
   importKey,
   toBase64Url,
   verifyHMAC,
-} from './utils/crypto';
+} from './utils/crypto.js';
 
 /**
  * @class Fernet
@@ -67,12 +67,12 @@ export class Fernet {
       importKey(
         signingKeyBuffer,
         {
-          name: Algorithms.HMAC,
-          hash: HashAlgorithm.SHA256,
+          name: algorithms.HMAC,
+          hash: hashAlgorithm.SHA256,
         },
         ['verify', 'sign']
       ),
-      importKey(encryptionKeyBuffer, { name: Algorithms.AES_CBC }, [
+      importKey(encryptionKeyBuffer, { name: algorithms.AES_CBC }, [
         'encrypt',
         'decrypt',
       ]),

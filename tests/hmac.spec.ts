@@ -1,15 +1,7 @@
-import '@testing-library/jest-dom';
-import crypto from 'crypto';
-import { TextEncoder } from 'util';
-import { Algorithms } from '../src/enums/Algorithms';
-import { HashAlgorithm } from '../src/enums/HashAlgorithm';
+import { describe, test, expect } from 'vitest';
+import { algorithms } from '../src/enums/Algorithms';
+import { hashAlgorithm } from '../src/enums/HashAlgorithm';
 import { generateHMAC, importKey, verifyHMAC } from '../src/utils/crypto';
-
-Object.defineProperty(global.self, 'crypto', {
-  value: {
-    subtle: crypto.webcrypto.subtle,
-  },
-});
 
 describe('generateHMAC', () => {
   test('returns a 32-byte long Uint8Array', async () => {
@@ -19,8 +11,8 @@ describe('generateHMAC', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );
@@ -38,8 +30,8 @@ describe('generateHMAC', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );
@@ -63,8 +55,8 @@ describe('verifyHMAC', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );
@@ -83,8 +75,8 @@ describe('verifyHMAC', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );
@@ -107,8 +99,8 @@ describe('verifyHMAC', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );
@@ -134,8 +126,8 @@ describe('verifyHMAC', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );
@@ -143,8 +135,8 @@ describe('verifyHMAC', () => {
     const secondKey = await importKey(
       secondKeyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );

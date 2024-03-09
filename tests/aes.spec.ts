@@ -1,17 +1,7 @@
-import '@testing-library/jest-dom';
-import crypto from 'crypto';
-import { TextDecoder, TextEncoder } from 'util';
-import { Algorithms } from '../src/enums/Algorithms';
-import { HashAlgorithm } from '../src/enums/HashAlgorithm';
+import { describe, test, expect } from 'vitest';
+import { algorithms } from '../src/enums/Algorithms';
+import { hashAlgorithm } from '../src/enums/HashAlgorithm';
 import { aesCbcDecrypt, aesCbcEncrypt, importKey } from '../src/utils/crypto';
-
-Object.assign(global, { TextDecoder, TextEncoder });
-
-Object.defineProperty(global.self, 'crypto', {
-  value: {
-    subtle: crypto.webcrypto.subtle,
-  },
-});
 
 describe('aesCbcEncrypt', () => {
   test('returns encrypted ciphertext as Uint8Array if the key and iv are valid', async () => {
@@ -24,7 +14,7 @@ describe('aesCbcEncrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt', 'decrypt']
     );
@@ -44,7 +34,7 @@ describe('aesCbcEncrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt', 'decrypt']
     );
@@ -63,7 +53,7 @@ describe('aesCbcEncrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt', 'decrypt']
     );
@@ -83,8 +73,8 @@ describe('aesCbcEncrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['sign', 'verify']
     );
@@ -104,7 +94,7 @@ describe('aesCbcEncrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['decrypt']
     );
@@ -126,7 +116,7 @@ describe('aesCbcDecrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt', 'decrypt']
     );
@@ -151,7 +141,7 @@ describe('aesCbcDecrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt', 'decrypt']
     );
@@ -161,7 +151,7 @@ describe('aesCbcDecrypt', () => {
     expect(ciphertext.length % 16).toBe(0);
 
     await expect(aesCbcDecrypt(ciphertext, iv2, key)).rejects.toThrowError(
-      'error:06065064:digital envelope routines:EVP_DecryptFinal_ex:bad decrypt'
+      'The operation failed for an operation-specific reason'
     );
   });
 
@@ -178,14 +168,14 @@ describe('aesCbcDecrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt', 'decrypt']
     );
     const key2 = await importKey(
       keyBytes2,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt', 'decrypt']
     );
@@ -195,7 +185,7 @@ describe('aesCbcDecrypt', () => {
     expect(ciphertext.length % 16).toBe(0);
 
     await expect(aesCbcDecrypt(ciphertext, iv, key2)).rejects.toThrowError(
-      'error:06065064:digital envelope routines:EVP_DecryptFinal_ex:bad decrypt'
+      'The operation failed for an operation-specific reason'
     );
   });
 
@@ -209,7 +199,7 @@ describe('aesCbcDecrypt', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.AES_CBC,
+        name: algorithms.AES_CBC,
       },
       ['encrypt']
     );

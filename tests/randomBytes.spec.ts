@@ -1,10 +1,7 @@
-import '@testing-library/jest-dom';
-import { TextEncoder } from 'util';
+import { describe, test, expect } from 'vitest';
 import { getRandomBytes } from '../src/utils/crypto';
 
-global.TextEncoder = TextEncoder;
-
-function getRandomInt(min, max) {
+function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
