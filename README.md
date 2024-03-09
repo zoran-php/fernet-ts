@@ -1,6 +1,6 @@
 # fernet-ts
 
-Fernet algorithm implementation written in Typescript (Web version only, not compatible with Node.js).
+Fernet algorithm implementation written in Typescript (Compatible with browsers, Deno 1.11+, Node.js 19+ and maybe other runtimes).
 
 This implementation is interoperable with Python version of Fernet.
 Encrypted text in this Typescript implementation can be decrypted using Python Fernet library and vice versa.

@@ -1,6 +1,6 @@
 export function fromBase64Url(base64url: string): Uint8Array {
   return Uint8Array.from(
-    window.atob(base64url.replace(/_/g, '/').replace(/-/g, '+')),
+    globalThis.atob(base64url.replace(/_/g, '/').replace(/-/g, '+')),
     (c) => c.charCodeAt(0)
   );
 }
@@ -10,12 +10,15 @@ export function toBase64Url(bytes: Uint8Array): string {
   bytes.forEach((byte) => {
     chars.push(String.fromCharCode(byte));
   });
-  return window.btoa(chars.join('')).replace(/\+/g, '-').replace(/\//g, '_');
+  return globalThis
+    .btoa(chars.join(''))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
 }
 
 export function getRandomBytes(length: number): Uint8Array {
   const randomBytes = new Uint8Array(length);
-  window.crypto.getRandomValues(randomBytes);
+  crypto.getRandomValues(randomBytes);
   return randomBytes;
 }
 
@@ -31,7 +34,7 @@ export async function generateHMAC(
   message: Uint8Array,
   key: CryptoKey
 ): Promise<Uint8Array> {
-  const signature = await window.crypto.subtle.sign('HMAC', key, message);
+  const signature = await crypto.subtle.sign('HMAC', key, message);
   return new Uint8Array(signature);
 }
 
@@ -40,7 +43,7 @@ export async function verifyHMAC(
   key: CryptoKey,
   hmac: Uint8Array
 ): Promise<boolean> {
-  let result = await window.crypto.subtle.verify('HMAC', key, hmac, message);
+  let result = await crypto.subtle.verify('HMAC', key, hmac, message);
   return result;
 }
 
