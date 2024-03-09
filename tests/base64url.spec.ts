@@ -1,8 +1,5 @@
-import '@testing-library/jest-dom';
-import { TextEncoder } from 'util';
+import { describe, test, expect } from 'vitest';
 import { fromBase64Url, toBase64Url } from '../src/utils/crypto';
-
-global.TextEncoder = TextEncoder;
 
 describe('toBase64Url', () => {
   test('returns a base64url encoded string with pad', () => {
@@ -45,7 +42,7 @@ describe('fromBase64Url', () => {
   test('throws an error for an invalid base64url-encoded string', () => {
     const base64url = '%%invalid*string!@#$';
     expect(() => fromBase64Url(base64url)).toThrow(
-      'The string to be decoded contains invalid characters.'
+      'Invalid character'
     );
   });
 });

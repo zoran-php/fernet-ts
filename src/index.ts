@@ -1,1 +1,1 @@
-export { Fernet } from './Fernet';
+export { Fernet } from './Fernet.js';

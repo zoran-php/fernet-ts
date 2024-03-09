@@ -1,14 +1,7 @@
-import '@testing-library/jest-dom';
-import crypto from 'crypto';
-import { Algorithms } from '../src/enums/Algorithms';
-import { HashAlgorithm } from '../src/enums/HashAlgorithm';
+import { describe, test, expect } from 'vitest';
+import { algorithms } from '../src/enums/Algorithms';
+import { hashAlgorithm } from '../src/enums/HashAlgorithm';
 import { importKey } from '../src/utils/crypto';
-
-Object.defineProperty(global.self, 'crypto', {
-  value: {
-    subtle: crypto.webcrypto.subtle,
-  },
-});
 
 describe('importKey', () => {
   test('returns a CryptoKey instance', async () => {
@@ -18,8 +11,8 @@ describe('importKey', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       ['verify', 'sign']
     );
@@ -34,12 +27,12 @@ describe('importKey', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       usages
     );
-    expect(key.algorithm.name).toEqual(Algorithms.HMAC);
+    expect(key.algorithm.name).toEqual(algorithms.HMAC);
   });
 
   test('returns CryptoKey with given usages', async () => {
@@ -50,8 +43,8 @@ describe('importKey', () => {
     const key = await importKey(
       keyBytes,
       {
-        name: Algorithms.HMAC,
-        hash: HashAlgorithm.SHA256,
+        name: algorithms.HMAC,
+        hash: hashAlgorithm.SHA256,
       },
       usages
     );
@@ -71,7 +64,7 @@ describe('importKey', () => {
         },
         usages
       )
-    ).rejects.toThrowError('Unrecognized name.');
+    ).rejects.toThrowError('Unrecognized algorithm name');
   });
 
   test('when given invalid usage will throw an error', async () => {
@@ -83,8 +76,8 @@ describe('importKey', () => {
       importKey(
         keyBytes,
         {
-          name: Algorithms.HMAC,
-          hash: HashAlgorithm.SHA256,
+          name: algorithms.HMAC,
+          hash: hashAlgorithm.SHA256,
         },
         usages
       )
