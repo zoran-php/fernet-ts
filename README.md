@@ -5,6 +5,15 @@ Fernet algorithm implementation written in Typescript (Web version only, not com
 This implementation is interoperable with Python version of Fernet.
 Encrypted text in this Typescript implementation can be decrypted using Python Fernet library and vice versa.
 
+<br>
+
+**Note:** Your web page must run on HTTPS, not HTTP.
+
+Because window.crypto.subtle(SubtleCrypto) is available only in secure contexts (HTTPS), in some or all supporting browsers.
+But `http://localhost` and `http://127.0.0.1` are excluded.
+
+
+
 ## Installation
 
 Use the package manager [npm](https://github.com/npm/cli) to install [fernet-ts](https://www.npmjs.com/package/fernet-ts).
